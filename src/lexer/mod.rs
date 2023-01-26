@@ -1,4 +1,4 @@
-use crate::unexpected_char::UnexpectedChar;
+use crate::error::Error;
 
 use self::{
     code_stream::CodeStream,
@@ -15,8 +15,8 @@ pub mod token;
 mod token_collector;
 
 pub struct Lexer {
-    collectors: Vec<Box<dyn TokenCollector>>,
     pub code_stream: CodeStream,
+    collectors: Vec<Box<dyn TokenCollector>>,
 }
 
 impl Lexer {
@@ -32,7 +32,7 @@ impl Lexer {
         }
     }
 
-    pub fn next_token(&mut self) -> Result<Token, UnexpectedChar> {
+    pub fn next(&mut self) -> Result<Token, Error> {
         self.skip_spaces();
 
         let index = self.code_stream.index;
@@ -50,11 +50,11 @@ impl Lexer {
         Err(self.unexpected_char())
     }
 
-    fn unexpected_char(&mut self) -> UnexpectedChar {
-        UnexpectedChar::new(
-            self.code_stream.accept().to_string(),
-            self.code_stream.index - 1,
-        )
+    pub fn unexpected_char(&mut self) -> Error {
+        Error::UnexpectedChar {
+            value: self.code_stream.accept(),
+            index: self.code_stream.index - 1,
+        }
     }
 
     fn skip_spaces(&mut self) {

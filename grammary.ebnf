@@ -1,0 +1,16 @@
+expr = 
+      expr '+' mul
+    | expr '-' mul
+    | mul;
+
+mul = mul '*' fact
+    | mul '/' fact
+    | mul '%' fact
+    | mul '\\' fact
+    | fact;
+
+fact = paren | call | unary | num | id;
+
+call = id '(' [ expr { ',' expr }] ')';
+unary = '-' fact;
+paren = '(' expr ')';

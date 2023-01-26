@@ -9,12 +9,7 @@ impl CodeStream {
     }
 
     pub fn current(&self) -> char {
-        let ch = self.expr.chars().nth(self.index);
-
-        match ch {
-            None => panic!("panic at CodeStream::current"),
-            Some(ch) => ch,
-        }
+        self.expr[self.index..].chars().next().unwrap()
     }
 
     pub fn accept(&mut self) -> char {

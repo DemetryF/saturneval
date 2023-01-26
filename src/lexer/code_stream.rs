@@ -20,7 +20,7 @@ impl CodeStream {
     }
 
     pub fn check(&self, char: char) -> bool {
-        return self.current() == char;
+        !self.is_eof() && self.current() == char
     }
 
     pub fn is_eof(&self) -> bool {

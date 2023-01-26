@@ -26,7 +26,13 @@ pub enum Expr {
         id: String,
         args: Vec<Expr>,
     },
-    Atom(String),
+    Atom(Atom),
+}
+
+#[derive(Debug)]
+pub enum Atom {
+    Number(String),
+    Id(String),
 }
 
 pub struct Parser {
@@ -41,10 +47,10 @@ impl Parser {
     }
 
     pub fn parse(&mut self) -> Result<Expr, Error> {
-        self.from_bp(0)
+        self.expr_bp(0)
     }
 
-    fn from_bp(&mut self, min_bp: usize) -> Result<Expr, Error> {
+    fn expr_bp(&mut self, min_bp: usize) -> Result<Expr, Error> {
         let mut lhs = self.fact()?;
 
         while let TokenValue::Operator(op) = self.token_stream.current().value {
@@ -56,7 +62,7 @@ impl Parser {
 
             self.token_stream.skip()?;
 
-            let rhs = self.from_bp(r_bp)?;
+            let rhs = self.expr_bp(r_bp)?;
 
             lhs = Expr::Infix {
                 lhs: Box::new(lhs),
@@ -76,8 +82,8 @@ impl Parser {
                 self.call(id)?
             }
             TokenValue::Operator(op) => self.unary(op)?,
-            TokenValue::Number(num) => Expr::Atom(num),
-            TokenValue::Id(id) => Expr::Atom(id),
+            TokenValue::Number(num) => Expr::Atom(Atom::Number(num)),
+            TokenValue::Id(id) => Expr::Atom(Atom::Id(id)),
             _ => return Err(Self::fail(token)),
         })
     }
@@ -88,7 +94,7 @@ impl Parser {
 
     fn unary(&mut self, op: Operator) -> Result<Expr, Error> {
         let r_bp = PowerBindings::prefix(op)?;
-        let rhs = Box::new(self.from_bp(r_bp)?);
+        let rhs = Box::new(self.expr_bp(r_bp)?);
 
         Ok(Expr::Prefix { op, rhs })
     }

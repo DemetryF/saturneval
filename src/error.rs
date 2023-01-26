@@ -4,4 +4,6 @@ use crate::lexer::token::Token;
 pub enum Error {
     UnexpectedChar { value: char, index: usize },
     UnexpectedToken(Token),
+    InvalidFunction(String),
+    InvalidConst(String),
 }

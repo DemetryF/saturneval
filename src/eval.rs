@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     error::Error,
     lexer::operator::Operator::*,
-    parser::{Atom, Expr, Parser},
+    parser::{Atom, Expr, Id, Parser},
 };
 
 type Function = dyn Fn(Vec<f64>) -> f64;
@@ -43,7 +43,7 @@ impl Evaluator {
                     Exponentiation => left.powf(right),
                 })
             }
-            Expr::Call { id, args } => match self.functions.get(&id) {
+            Expr::Call { id, args } => match self.functions.get(&id.value) {
                 None => Err(Error::InvalidFunction(id)),
                 Some(f) => {
                     let mut call_args = Vec::new();
@@ -60,8 +60,8 @@ impl Evaluator {
         }
     }
 
-    fn get_const(&self, id: String) -> Result<f64, Error> {
-        match self.constants.get(&id) {
+    fn get_const(&self, id: Id) -> Result<f64, Error> {
+        match self.constants.get(&id.value) {
             Some(value) => Ok(*value),
             None => Err(Error::InvalidConst(id)),
         }

@@ -1,9 +1,9 @@
-use crate::lexer::token::Token;
+use crate::{lexer::token::Token, parser::Id};
 
 #[derive(Debug)]
 pub enum Error {
     UnexpectedChar { value: char, index: usize },
     UnexpectedToken(Token),
-    InvalidFunction(String),
-    InvalidConst(String),
+    InvalidFunction(Id),
+    InvalidConst(Id),
 }

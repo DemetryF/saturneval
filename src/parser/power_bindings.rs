@@ -1,18 +1,11 @@
-use crate::{
-    error::Error,
-    lexer::operator::Operator::{self, *},
-};
+use crate::lexer::operator::Operator::{self, *};
 
 pub struct PowerBindings;
 impl PowerBindings {
-    pub fn prefix(op: Operator) -> Result<usize, Error> {
+    pub fn prefix(op: Operator) -> Result<usize, ()> {
         match op {
             Subtraction => Ok(7),
-
-            _ => Err(Error::UnexpectedChar {
-                value: char::from(op.to_owned()),
-                index: 0,
-            }),
+            _ => Err(()),
         }
     }
 

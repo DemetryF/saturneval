@@ -1,3 +1,5 @@
+use derive_more::Constructor;
+
 use crate::{
     error::Error,
     lexer::{
@@ -23,7 +25,7 @@ pub enum Expr {
         rhs: Box<Expr>,
     },
     Call {
-        id: String,
+        id: Id,
         args: Vec<Expr>,
     },
     Atom(Atom),
@@ -32,7 +34,13 @@ pub enum Expr {
 #[derive(Debug)]
 pub enum Atom {
     Number(String),
-    Id(String),
+    Id(Id),
+}
+
+#[derive(Debug, Constructor)]
+pub struct Id {
+    pub value: String,
+    pub index: usize,
 }
 
 pub struct Parser {
@@ -79,11 +87,11 @@ impl Parser {
 
         Ok(match token.value.clone() {
             TokenValue::Id(id) if self.token_stream.check(&TokenValue::OpeningParen) => {
-                self.call(id)?
+                self.call(Id::new(id, token.index))?
             }
-            TokenValue::Operator(op) => self.unary(op)?,
+            TokenValue::Operator(op) => self.unary(op, token.index)?,
             TokenValue::Number(num) => Expr::Atom(Atom::Number(num)),
-            TokenValue::Id(id) => Expr::Atom(Atom::Id(id)),
+            TokenValue::Id(id) => Expr::Atom(Atom::Id(Id::new(id, token.index))),
             _ => return Err(Self::fail(token)),
         })
     }
@@ -92,14 +100,22 @@ impl Parser {
         Error::UnexpectedToken(token)
     }
 
-    fn unary(&mut self, op: Operator) -> Result<Expr, Error> {
-        let r_bp = PowerBindings::prefix(op)?;
+    fn unary(&mut self, op: Operator, index: usize) -> Result<Expr, Error> {
+        let r_bp = match PowerBindings::prefix(op) {
+            Ok(r_bp) => r_bp,
+            Err(()) => {
+                return Err(Self::fail(Token {
+                    value: TokenValue::Operator(op),
+                    index,
+                }))
+            }
+        };
         let rhs = Box::new(self.expr_bp(r_bp)?);
 
         Ok(Expr::Prefix { op, rhs })
     }
 
-    fn call(&mut self, id: String) -> Result<Expr, Error> {
+    fn call(&mut self, id: Id) -> Result<Expr, Error> {
         self.token_stream.accept(&TokenValue::OpeningParen)?;
         let args = self.call_args()?;
         self.token_stream.accept(&TokenValue::ClosingParen)?;

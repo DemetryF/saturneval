@@ -15,8 +15,5 @@ fn main() {
 
     eval.functions.insert("call".into(), Box::new(|_| 1.0));
 
-    println!(
-        "{:#?}",
-        eval.eval("0 + 1 + 2 * 3 ^ call(4, 5, 6 + 7)".into())
-    );
+    println!("{:#?}", eval.eval("id()".into()));
 }

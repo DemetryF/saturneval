@@ -58,9 +58,7 @@ impl Repl {
     }
 
     pub fn error(&self, error: Error) {
-        let index = error.index;
-
-        let shift = " ".repeat(index + self.prefix.len() + 1);
+        let shift = " ".repeat(error.index + self.prefix.len() + 1);
         let mut arrow = "^".to_string();
         let prefix = "Error: ".red();
         let message = error.kind.to_string();

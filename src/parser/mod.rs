@@ -55,7 +55,9 @@ impl Parser {
     }
 
     pub fn parse(&mut self) -> Result<Expr, Error> {
-        self.expr_bp(0)
+        let expr = self.expr_bp(0)?;
+        self.token_stream.accept(&TokenValue::Eof)?;
+        Ok(expr)
     }
 
     fn expr_bp(&mut self, min_bp: usize) -> Result<Expr, Error> {

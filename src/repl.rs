@@ -19,27 +19,38 @@ impl Repl {
     }
 
     pub fn start(&self) {
-        println!(
-            "Welcome to SaturnEval v{}.{}.{}.\nType \"exit\" for exit.",
-            std::env::var("CARGO_PKG_VERSION_MAJOR").unwrap(),
-            std::env::var("CARGO_PKG_VERSION_MINOR").unwrap(),
-            std::env::var("CARGO_PKG_VERSION_PATCH").unwrap(),
-        );
-
-        let reader = Interface::new("SaturnEval").unwrap();
-        reader
-            .set_prompt((self.prefix.to_string() + " ").as_str())
-            .unwrap();
+        Self::welcome();
+        let reader = self.create_reader();
 
         while let ReadResult::Input(expr) = reader.read_line().unwrap() {
-            if expr.trim() == "exit" {
+            let expr = expr.trim_end().to_string();
+            if expr == "exit" {
                 break;
             }
             self.eval_loop(expr);
         }
     }
 
-    pub fn eval_loop(&self, expr: String) {
+    fn welcome() {
+        println!(
+            "Welcome to SaturnEval v{}.{}.{}.\nType \"exit\" for exit.",
+            std::env::var("CARGO_PKG_VERSION_MAJOR").unwrap(),
+            std::env::var("CARGO_PKG_VERSION_MINOR").unwrap(),
+            std::env::var("CARGO_PKG_VERSION_PATCH").unwrap(),
+        );
+    }
+
+    fn create_reader(&self) -> Interface<linefeed::DefaultTerminal> {
+        let reader = Interface::new("SaturnEval").unwrap();
+
+        reader
+            .set_prompt((self.prefix.to_string() + " ").as_str())
+            .unwrap();
+
+        reader
+    }
+
+    fn eval_loop(&self, expr: String) {
         match self.evaluator.eval(expr) {
             Ok(number) => println!("{}", number),
             Err(error) => self.error(error),

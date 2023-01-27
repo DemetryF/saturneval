@@ -1,5 +1,5 @@
 use crate::{
-    error::Error,
+    error::{Error, ErrorKind},
     lexer::{
         token::{Token, TokenValue},
         Lexer,
@@ -55,6 +55,9 @@ impl TokenStream {
     }
 
     pub fn fail(&self) -> Error {
-        Error::UnexpectedToken(self.current().to_owned())
+        Error::new(
+            ErrorKind::UnexpectedToken(self.current().value.clone()),
+            self.current.index,
+        )
     }
 }

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    error::Error,
+    error::{Error, ErrorKind},
     lexer::operator::Operator::*,
     parser::{Atom, Expr, Id, Parser},
 };
@@ -44,7 +44,7 @@ impl Evaluator {
                 })
             }
             Expr::Call { id, args } => match self.functions.get(&id.value) {
-                None => Err(Error::InvalidFunction(id)),
+                None => Err(Error::new(ErrorKind::InvalidFunction(id.value), id.index)),
                 Some(f) => {
                     let mut call_args = Vec::new();
 
@@ -63,7 +63,7 @@ impl Evaluator {
     fn get_const(&self, id: Id) -> Result<f64, Error> {
         match self.constants.get(&id.value) {
             Some(value) => Ok(*value),
-            None => Err(Error::InvalidConst(id)),
+            None => Err(Error::new(ErrorKind::InvalidConst(id.value), id.index)),
         }
     }
 }

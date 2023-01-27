@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use strum_macros::EnumIter;
 
 macro_rules! operators {
@@ -16,6 +17,12 @@ macro_rules! operators {
                         Operator::$Case => $CaseValue,
                     )*
                 }
+            }
+        }
+
+        impl Display for Operator {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", char::from(*self))
             }
         }
     };

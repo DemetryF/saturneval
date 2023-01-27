@@ -1,7 +1,7 @@
 use derive_more::Constructor;
 
 use crate::{
-    error::Error,
+    error::{Error, ErrorKind},
     lexer::{
         operator::Operator,
         token::{Token, TokenValue},
@@ -97,7 +97,7 @@ impl Parser {
     }
 
     fn fail(token: Token) -> Error {
-        Error::UnexpectedToken(token)
+        Error::new(ErrorKind::UnexpectedToken(token.value), token.index)
     }
 
     fn unary(&mut self, op: Operator, index: usize) -> Result<Expr, Error> {

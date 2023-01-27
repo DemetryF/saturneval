@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 
 use self::{
     code_stream::CodeStream,
@@ -51,10 +51,10 @@ impl Lexer {
     }
 
     pub fn unexpected_char(&mut self) -> Error {
-        Error::UnexpectedChar {
-            value: self.code_stream.accept(),
-            index: self.code_stream.index - 1,
-        }
+        Error::new(
+            ErrorKind::UnexpectedChar(self.code_stream.current()),
+            self.code_stream.index,
+        )
     }
 
     fn skip_spaces(&mut self) {

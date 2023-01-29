@@ -2,7 +2,10 @@ use crate::{
     env::Env,
     error::Error,
     lexer::operator::Operator::*,
-    parser::{Atom, Expr, Parser},
+    parser::{
+        expr::{Atom, Call, Expr, Infix, Prefix},
+        Parser,
+    },
 };
 
 pub struct Evaluator {
@@ -11,44 +14,64 @@ pub struct Evaluator {
 
 impl Evaluator {
     pub fn eval(&self, code: String) -> Result<f64, Error> {
-        let tree = Parser::new(code)?.parse()?;
-        self.eval_expr(tree)
+        Parser::new(code)?.parse()?.eval(self)
     }
+}
 
-    fn eval_expr(&self, expr: Expr) -> Result<f64, Error> {
-        match expr {
-            Expr::Prefix { op: _, rhs } => {
-                let value = self.eval_expr(*rhs)?;
-                Ok(-value)
-            }
-            Expr::Infix { lhs, op, rhs } => {
-                let left = self.eval_expr(*lhs)?;
-                let right = self.eval_expr(*rhs)?;
+trait Eval {
+    fn eval(self, evaluator: &Evaluator) -> Result<f64, Error>;
+}
 
-                fn whole_division(left: f64, right: f64) -> f64 {
-                    ((left as i64) / (right as i64)) as f64
-                }
+impl Eval for Call {
+    fn eval(self, evaluator: &Evaluator) -> Result<f64, Error> {
+        match evaluator.env.get_function(self.id) {
+            Ok(f) => Ok((f.call)(
+                self.args
+                    .into_iter()
+                    .map(|x| x.eval(evaluator))
+                    .collect::<Result<Vec<f64>, Error>>()?,
+            )),
+            Err(error) => Err(error),
+        }
+    }
+}
 
-                Ok(match op {
-                    Addition => left + right,
-                    Subtraction => left - right,
-                    Multiplication => left * right,
-                    Division => left / right,
-                    WholeDivision => whole_division(left, right),
-                    ModuloDivision => left % right,
-                    Exponentiation => left.powf(right),
-                })
-            }
-            Expr::Call { id, args } => match self.env.get_function(id) {
-                Ok(f) => Ok((f.call)(
-                    args.into_iter()
-                        .map(|x| self.eval_expr(x))
-                        .collect::<Result<Vec<f64>, Error>>()?,
-                )),
-                Err(_) => todo!(),
-            },
-            Expr::Atom(Atom::Id(id)) => self.env.get_const(id),
+impl Eval for Expr {
+    fn eval(self, evaluator: &Evaluator) -> Result<f64, Error> {
+        match self {
+            Expr::Prefix(prefix) => prefix.eval(evaluator),
+            Expr::Infix(infix) => infix.eval(evaluator),
+            Expr::Call(call) => call.eval(evaluator),
+            Expr::Atom(Atom::Id(id)) => evaluator.env.get_const(id),
             Expr::Atom(Atom::Number(num)) => Ok(num.parse().unwrap()),
         }
+    }
+}
+
+impl Eval for Infix {
+    fn eval(self, evaluator: &Evaluator) -> Result<f64, Error> {
+        let left = self.lhs.eval(evaluator)?;
+        let right = self.rhs.eval(evaluator)?;
+
+        fn whole_division(left: f64, right: f64) -> f64 {
+            ((left as i64) / (right as i64)) as f64
+        }
+
+        Ok(match self.op {
+            Addition => left + right,
+            Subtraction => left - right,
+            Multiplication => left * right,
+            Division => left / right,
+            WholeDivision => whole_division(left, right),
+            ModuloDivision => left % right,
+            Exponentiation => left.powf(right),
+        })
+    }
+}
+
+impl Eval for Prefix {
+    fn eval(self, evaluator: &Evaluator) -> Result<f64, Error> {
+        let value = self.rhs.eval(evaluator)?;
+        Ok(-value)
     }
 }

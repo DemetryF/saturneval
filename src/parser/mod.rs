@@ -1,5 +1,3 @@
-use derive_more::Constructor;
-
 use crate::{
     error::{Error, ErrorKind},
     lexer::{
@@ -8,40 +6,15 @@ use crate::{
     },
 };
 
-use self::{power_bindings::PowerBindings, token_stream::TokenStream};
+use self::{
+    expr::{Atom, Call, Expr, Id, Infix, Prefix},
+    power_bindings::PowerBindings,
+    token_stream::TokenStream,
+};
 
+pub mod expr;
 mod power_bindings;
 mod token_stream;
-
-#[derive(Debug)]
-pub enum Expr {
-    Prefix {
-        op: Operator,
-        rhs: Box<Expr>,
-    },
-    Infix {
-        lhs: Box<Expr>,
-        op: Operator,
-        rhs: Box<Expr>,
-    },
-    Call {
-        id: Id,
-        args: Vec<Expr>,
-    },
-    Atom(Atom),
-}
-
-#[derive(Debug)]
-pub enum Atom {
-    Number(String),
-    Id(Id),
-}
-
-#[derive(Debug, Constructor)]
-pub struct Id {
-    pub value: String,
-    pub index: usize,
-}
 
 pub struct Parser {
     token_stream: TokenStream,
@@ -74,11 +47,7 @@ impl Parser {
 
             let rhs = self.expr_bp(r_bp)?;
 
-            lhs = Expr::Infix {
-                lhs: Box::new(lhs),
-                op,
-                rhs: Box::new(rhs),
-            }
+            lhs = Expr::Infix(Infix::new(Box::new(lhs), op, Box::new(rhs)));
         }
 
         Ok(lhs)
@@ -114,7 +83,7 @@ impl Parser {
         };
         let rhs = Box::new(self.expr_bp(r_bp)?);
 
-        Ok(Expr::Prefix { op, rhs })
+        Ok(Expr::Prefix(Prefix::new(op, rhs)))
     }
 
     fn call(&mut self, id: Id) -> Result<Expr, Error> {
@@ -122,7 +91,7 @@ impl Parser {
         let args = self.call_args()?;
         self.token_stream.accept(&TokenValue::ClosingParen)?;
 
-        Ok(Expr::Call { id, args })
+        Ok(Expr::Call(Call::new(id, args)))
     }
 
     fn call_args(&mut self) -> Result<Vec<Expr>, Error> {

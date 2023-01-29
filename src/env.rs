@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     error::{Error, ErrorKind},
-    parser::Id,
+    parser::expr::Id,
 };
 
 pub struct Function {

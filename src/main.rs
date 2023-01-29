@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-
+use env::Env;
 use repl::Repl;
 
 use crate::eval::Evaluator;
 
+mod env;
 mod error;
 pub mod eval;
 mod lexer;
@@ -11,7 +11,9 @@ mod parser;
 mod repl;
 
 fn main() {
-    let mut evaluator = Evaluator::default();
+    let evaluator = Evaluator {
+        env: Env::default(),
+    };
 
     Repl::new(evaluator).start();
 }

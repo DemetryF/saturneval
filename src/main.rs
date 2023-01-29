@@ -1,11 +1,8 @@
-use env::Env;
+use evaluator::{env::Env, Evaluator};
 use repl::Repl;
 
-use crate::eval::Evaluator;
-
-mod env;
 mod error;
-pub mod eval;
+pub mod evaluator;
 mod lexer;
 mod parser;
 mod repl;

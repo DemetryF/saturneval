@@ -1,6 +1,6 @@
 use crate::{
     error::{Error, ErrorKind},
-    eval::Evaluator,
+    evaluator::Evaluator,
 };
 use colored::Colorize;
 use linefeed::{Interface, ReadResult};

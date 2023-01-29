@@ -1,24 +1,12 @@
 use crate::{
-    env::Env,
     error::Error,
     lexer::operator::Operator::*,
-    parser::{
-        expr::{Atom, Call, Expr, Infix, Prefix},
-        Parser,
-    },
+    parser::expr::{Atom, Call, Expr, Infix, Prefix},
 };
 
-pub struct Evaluator {
-    pub env: Env,
-}
+use super::Evaluator;
 
-impl Evaluator {
-    pub fn eval(&self, code: String) -> Result<f64, Error> {
-        Parser::new(code)?.parse()?.eval(self)
-    }
-}
-
-trait Eval {
+pub trait Eval {
     fn eval(self, evaluator: &Evaluator) -> Result<f64, Error>;
 }
 

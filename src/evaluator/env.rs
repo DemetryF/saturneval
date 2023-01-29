@@ -23,7 +23,7 @@ impl Env {
         }
     }
 
-    pub fn default() -> Self {
+    pub fn new_with_std() -> Self {
         let mut default = Self::empty();
 
         default.add_constant("pi", std::f64::consts::PI);

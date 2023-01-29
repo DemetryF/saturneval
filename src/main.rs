@@ -9,7 +9,7 @@ mod repl;
 
 fn main() {
     let evaluator = Evaluator {
-        env: Env::default(),
+        env: Env::new_with_std(),
     };
 
     Repl::new(evaluator).start();

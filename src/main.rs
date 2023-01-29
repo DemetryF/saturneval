@@ -11,12 +11,7 @@ mod parser;
 mod repl;
 
 fn main() {
-    let mut evaluator = Evaluator {
-        functions: HashMap::new(),
-        constants: HashMap::new(),
-    };
-
-    evaluator.functions.insert("call".into(), Box::new(|_| 1.0));
+    let mut evaluator = Evaluator::default();
 
     Repl::new(evaluator).start();
 }

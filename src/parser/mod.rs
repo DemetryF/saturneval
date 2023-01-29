@@ -132,7 +132,7 @@ impl Parser {
             return Ok(args);
         }
 
-        args.push(self.parse()?);
+        args.push(self.expr_bp(0)?);
 
         while self.token_stream.check(&TokenValue::Comma) {
             self.token_stream.skip()?;

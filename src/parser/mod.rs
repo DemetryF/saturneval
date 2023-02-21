@@ -1,16 +1,11 @@
 use crate::{
     error::{Error, ErrorKind},
-    lexer::{
-        operator::Operator,
-        token::{Token, TokenValue},
-    },
+    lexer::{Operator, Token, TokenValue},
 };
 
-use self::{
-    expr::{Atom, Call, Expr, Id, Infix, Prefix},
-    power_bindings::PowerBindings,
-    token_stream::TokenStream,
-};
+use self::{power_bindings::PowerBindings, token_stream::TokenStream};
+
+pub use self::expr::*;
 
 pub mod expr;
 mod power_bindings;

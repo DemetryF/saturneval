@@ -2,11 +2,15 @@ use crate::error::{Error, ErrorKind};
 
 use self::{
     code_stream::CodeStream,
-    token::{Token, TokenValue},
     token_collector::{
         number_collector::NumberCollector, operator_collector::OperatorCollector,
         special_collector::SpecialCollector, word_collector::WordCollector, TokenCollector,
     },
+};
+
+pub use self::{
+    operator::Operator,
+    token::{Token, TokenValue},
 };
 
 mod code_stream;

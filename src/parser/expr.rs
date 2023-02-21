@@ -1,6 +1,6 @@
 use derive_more::Constructor;
 
-use crate::lexer::operator::Operator;
+use crate::lexer::Operator;
 
 #[derive(Debug)]
 pub enum Expr {

@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use derive_more::Constructor;
 
-use crate::lexer::token::TokenValue;
+use crate::lexer::TokenValue;
 
 #[derive(Debug, Constructor)]
 pub struct Error {

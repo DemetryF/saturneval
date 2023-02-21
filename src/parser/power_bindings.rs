@@ -1,4 +1,4 @@
-use crate::lexer::operator::Operator::{self, *};
+use crate::lexer::Operator::{self, *};
 
 pub struct PowerBindings;
 impl PowerBindings {

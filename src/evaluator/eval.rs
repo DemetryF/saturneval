@@ -1,7 +1,7 @@
 use crate::{
     error::Error,
-    lexer::operator::Operator::*,
-    parser::expr::{Atom, Call, Expr, Infix, Prefix},
+    lexer::Operator::*,
+    parser::{Atom, Call, Expr, Infix, Prefix},
 };
 
 use super::Evaluator;

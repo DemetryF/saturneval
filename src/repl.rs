@@ -1,9 +1,10 @@
+use colored::Colorize;
+use linefeed::{Interface, ReadResult};
+
 use crate::{
     error::{Error, ErrorKind},
     evaluator::Evaluator,
 };
-use colored::Colorize;
-use linefeed::{Interface, ReadResult};
 
 pub struct Repl {
     evaluator: Evaluator,

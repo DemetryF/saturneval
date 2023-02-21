@@ -1,4 +1,5 @@
 use std::fmt::Display;
+
 use strum_macros::EnumIter;
 
 macro_rules! operators {

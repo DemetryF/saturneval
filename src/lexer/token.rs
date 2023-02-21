@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use derive_more::Constructor;
 
-use super::operator::Operator;
+use super::Operator;
 
 #[derive(Debug, Constructor, Clone)]
 pub struct Token {

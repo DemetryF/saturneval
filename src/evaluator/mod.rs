@@ -1,7 +1,9 @@
+use crate::{error::Error, parser::Parser};
+
+use self::{env::Env, eval::Eval};
+
 pub mod env;
 mod eval;
-
-use crate::{error::Error, evaluator::eval::Eval, parser::Parser, Env};
 
 pub struct Evaluator {
     pub env: Env,

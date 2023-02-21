@@ -1,9 +1,6 @@
 use crate::{
     error::{Error, ErrorKind},
-    lexer::{
-        token::{Token, TokenValue},
-        Lexer,
-    },
+    lexer::{Lexer, Token, TokenValue},
 };
 
 pub struct TokenStream {

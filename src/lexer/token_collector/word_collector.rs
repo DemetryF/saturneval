@@ -1,7 +1,6 @@
-use crate::lexer::{code_stream::CodeStream, token::TokenValue, token_collector::TokenCollector};
+use crate::lexer::{CodeStream, TokenCollector, TokenValue};
 
 pub struct WordCollector;
-
 impl WordCollector {
     fn is_word_char(code: &CodeStream) -> bool {
         code.current().is_ascii_alphanumeric()

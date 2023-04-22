@@ -45,7 +45,7 @@ impl Eval for Infix {
             ((left as i64) / (right as i64)) as f64
         }
 
-        Ok(match self.op {
+        let result = match self.op {
             Addition => left + right,
             Subtraction => left - right,
             Multiplication => left * right,
@@ -53,13 +53,16 @@ impl Eval for Infix {
             WholeDivision => whole_division(left, right),
             ModuloDivision => left % right,
             Exponentiation => left.powf(right),
-        })
+        };
+
+        Ok(result)
     }
 }
 
 impl Eval for Prefix {
     fn eval(self, evaluator: &Evaluator) -> Result<f64, Error> {
         let value = self.rhs.eval(evaluator)?;
+
         Ok(-value)
     }
 }

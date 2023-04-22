@@ -10,21 +10,15 @@ pub struct Function {
     pub call: Box<dyn Fn(Vec<f64>) -> f64>,
 }
 
+#[derive(Default)]
 pub struct Env {
     pub functions: HashMap<String, Function>,
     pub constants: HashMap<String, f64>,
 }
 
 impl Env {
-    pub fn empty() -> Self {
-        Self {
-            functions: HashMap::new(),
-            constants: HashMap::new(),
-        }
-    }
-
     pub fn new_with_std() -> Self {
-        let mut default = Self::empty();
+        let mut default = Self::default();
 
         default.add_constant("pi", std::f64::consts::PI);
         default.add_constant("e", std::f64::consts::E);

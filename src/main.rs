@@ -2,7 +2,7 @@ use evaluator::{env::Env, Evaluator};
 use repl::Repl;
 
 mod error;
-pub mod evaluator;
+mod evaluator;
 mod lexer;
 mod parser;
 mod repl;

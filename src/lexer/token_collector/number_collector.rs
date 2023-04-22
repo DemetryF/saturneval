@@ -18,7 +18,7 @@ impl NumberCollector {
 }
 
 impl TokenCollector for NumberCollector {
-    fn try_next(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
+    fn try_collect(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
         if !Self::is_digit(code) && !code.check('.') {
             return None;
         }

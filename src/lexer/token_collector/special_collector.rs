@@ -2,7 +2,7 @@ use crate::lexer::{CodeStream, TokenCollector, TokenValue};
 
 pub struct SpecialCollector;
 impl TokenCollector for SpecialCollector {
-    fn try_next(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
+    fn try_collect(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
         let value = Some(match code.current() {
             ',' => TokenValue::Comma,
             '(' => TokenValue::OpeningParen,

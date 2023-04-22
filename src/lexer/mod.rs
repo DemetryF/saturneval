@@ -46,7 +46,7 @@ impl Lexer {
         }
 
         for collector in self.collectors.iter_mut() {
-            if let Some(token_value) = collector.try_next(&mut self.code_stream) {
+            if let Some(token_value) = collector.try_collect(&mut self.code_stream) {
                 return Ok(Token::new(token_value, index));
             }
         }

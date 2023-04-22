@@ -18,7 +18,7 @@ impl WordCollector {
 }
 
 impl TokenCollector for WordCollector {
-    fn try_next(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
+    fn try_collect(&mut self, code: &mut CodeStream) -> Option<TokenValue> {
         if !code.current().is_alphabetic() {
             return None;
         }
